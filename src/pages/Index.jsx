@@ -1,7 +1,16 @@
-import { Container, VStack, Heading, Text, Box, Image, Link } from "@chakra-ui/react";
+import { Container, VStack, Heading, Text, Box, Image, Link, Button } from "@chakra-ui/react";
 import { FaTwitter, FaGithub, FaLinkedin } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 
 const Index = () => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const storedPosts = JSON.parse(localStorage.getItem("posts")) || [];
+    setPosts(storedPosts);
+  }, []);
+
   return (
     <Container centerContent maxW="container.md" py={10}>
       <VStack spacing={8} align="stretch">
@@ -13,18 +22,16 @@ const Index = () => {
           <Image borderRadius="md" src="/images/blog-image.jpg" alt="Blog Image" />
         </Box>
         <Box>
+          <Button as={RouterLink} to="/add-post" colorScheme="teal" size="lg" mb={4}>Add New Post</Button>
           <Heading as="h2" size="lg" mb={4}>Recent Posts</Heading>
           <VStack spacing={4} align="stretch">
-            <Box p={5} shadow="md" borderWidth="1px">
-              <Heading fontSize="xl">Post Title 1</Heading>
-              <Text mt={4}>This is a summary of the first blog post. It gives a brief overview of the content...</Text>
-              <Link color="teal.500" href="#">Read more</Link>
-            </Box>
-            <Box p={5} shadow="md" borderWidth="1px">
-              <Heading fontSize="xl">Post Title 2</Heading>
-              <Text mt={4}>This is a summary of the second blog post. It gives a brief overview of the content...</Text>
-              <Link color="teal.500" href="#">Read more</Link>
-            </Box>
+            {posts.map((post, index) => (
+              <Box key={index} p={5} shadow="md" borderWidth="1px">
+                <Heading fontSize="xl">{post.title}</Heading>
+                <Text mt={4}>{post.content}</Text>
+                {post.imageUrl && <Image borderRadius="md" src={post.imageUrl} alt={post.title} mt={4} />}
+              </Box>
+            ))}
           </VStack>
         </Box>
         <Box textAlign="center">
